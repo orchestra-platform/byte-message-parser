@@ -1,12 +1,16 @@
 {
-  "name": "serial-port",
-  "version": "0.1.0",
+  "name": "@orchestra-platform/serial-port",
+  "version": "0.1.1",
   "description": "serial-port",
   "repository": {
     "type": "git",
-    "url": "https://github.com/orchestra-platform/serial-port-helper"
+    "url": "git+https://github.com/orchestra-platform/serial-port-helper.git"
   },
   "dependencies": {
     "serialport": "^6.0.3"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/orchestra-platform/serial-port-helper/issues"
+  },
+  "homepage": "https://github.com/orchestra-platform/serial-port-helper#readme"
 }
