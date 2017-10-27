@@ -2,6 +2,7 @@
 
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
+const Logger = require('@orchestra-platform/logger');
 
 const MessagesManager = require('./messagesManager.js');
 const utils = require('./utils.js');
@@ -43,12 +44,8 @@ module.exports = class SerialPortHelper extends EventEmitter {
         this._msgManager = new MessagesManager(this._messages.all);
 
         // Log
-        this._name = name = name || `serial-port-${Math.random().toString(36).substring(7)}`;
-        this._log = (level, ...logs) => {
-            if (level == 'debug')
-                return;
-            console.log(`[SeriaPort ${this._name} - ${level}]`, ...logs);
-        }
+        this._name = `SerialPortHelper-${name}` || `SerialPortHelper-${Math.random().toString(36).substring(7)}`;
+        this._log = new Logger(options.logLevel);
 
         // Init
         this._byteBuffer = [];
@@ -59,21 +56,21 @@ module.exports = class SerialPortHelper extends EventEmitter {
         this.readMessageTimeout = options.readMessageTimeout || 60 * 1000;
 
         // Open serial port
-        this._log('debug', 'Opening...');
+        this._log.i(this._name, 'constructor', 'Opening...');
         this._serialPort = new SerialPort(path, { baudRate, stopBits, parity, dataBits });
 
         this._serialPort.on('open', _ => {
-            this._log('info', 'Serial port open');
+            this._log.i(this._name, 'serialPort.on(open)', 'Serial port open');
             this.emit('open');
         });
 
         this._serialPort.on('close', _ => {
-            this._log('info', 'Serial port close');
+            this._log.i(this._name, 'serialPort.on(close)', 'Serial port close');
             this.emit('close');
         });
 
         this._serialPort.on('error', err => {
-            this._log('error', 'Error: ', err);
+            this._log.e(this._name, 'serialPort.on(error)', 'Error', err);
             this.emit('error', err);
         });
 
@@ -85,7 +82,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
     // This funciton is call when new data is received on the serial port
     _handleSerialPortData(data) {
         // Store the new data
-        this._log('debug', 'Received ', utils.byteArrayToString(data));
+        this._log.d(this._name, '_handleSerialPortData', 'Received', utils.byteArrayToString(data));
         // this._log('ResponseByteBuffer = ', utils.byteArrayToString(this._byteBuffer));
 
         if (!this._isReadingMessage) {
@@ -98,7 +95,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
                 // We don't know what this means, we just ignore the byte
                 // Ideally this should never happen 😅
                 const byteString = utils.byteArrayToString(data[0]);
-                this._log('warn', `*** Ignored ${byteString}`);
+                this._log.w(this._name, `*** Ignored ${byteString}`);
                 data.shift();
             }
         }
@@ -127,7 +124,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
                         subscriptions.splice(index, 1); // Remove subscription
                 });
 
-                this._log('info', 'New Message: ', message);
+                this._log.i(this._name, '_handleSerialPortData', 'New Message', message);
             }
         }
     }
@@ -155,7 +152,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
             this._serialPort.drain(resolve);
         });
         await sendToSerial(data);
-        this._log('info', 'Sent: ', utils.byteArrayToString(data));
+        this._log.i(this._name, 'writeBytes', 'Sent', utils.byteArrayToString(data));
     }
 
 
