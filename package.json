@@ -1,12 +1,19 @@
 {
   "name": "@orchestra-platform/serial-port",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "serial-port",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/orchestra-platform/serial-port-helper.git"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "@orchestra-platform/logger": "^0.1.0",
     "serialport": "^6.0.3"
   },
   "bugs": {
