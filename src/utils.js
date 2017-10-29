@@ -25,7 +25,8 @@ const log = module.exports.log = (byteArray, text) => {
  */
 const byteArrayToString = module.exports.byteArrayToString = (byteArray) => {
     const pad2 = x => x && x.length == 1 ? '0' + x : x;
-    const bytes = Array.from(byteArray || []).map(x => pad2(x.toString(16)));
+    const bytes = Array.from(byteArray || [])
+        .map(x => x ? pad2(x.toString(16)) : '?');
     return `[${bytes.join(', ')}]`;
 }
 
