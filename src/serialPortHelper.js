@@ -115,7 +115,8 @@ class SerialPortHelper extends EventEmitter {
                 this._subscriptions.forEach((subscription, index, subscriptions) => {
                     if (subscription.msg != message.type)
                         return;
-                    subscription.callback(message);
+                    if (typeof subscription.callback === 'function')
+                        subscription.callback(message);
                     if (subscription.once)
                         subscriptions.splice(index, 1); // Remove subscription
                 });
