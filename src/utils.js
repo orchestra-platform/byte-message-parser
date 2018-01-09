@@ -1,11 +1,29 @@
 'use strict';
 
+/**
+ * @module utils
+ */
 module.exports = {};
+
 
 /**
  * @param {number} millis milliseconds
  */
-const wait = module.exports.wait = millis => new Promise(resolve => setTimeout(resolve, millis));
+module.exports.wait = millis => new Promise(resolve => setTimeout(resolve, millis));
+
+
+/**
+ * Converts a byte array to string
+ * @param {Array} byteArray
+ * @returns {String}
+ */
+module.exports.byteArrayToString = (byteArray) => {
+    const pad2 = x => x && x.length == 1 ? '0' + x : x;
+    const bytes = Array.from(byteArray || [])
+        .map(x => x ? pad2(x.toString(16)) : '?');
+    return `[${bytes.join(', ')}]`;
+}
+const byteArrayToString = module.exports.byteArrayToString;
 
 
 /**
@@ -13,21 +31,10 @@ const wait = module.exports.wait = millis => new Promise(resolve => setTimeout(r
  * @param {Array} byteArray
  * @param {String} text
  */
-const log = module.exports.log = (byteArray, text) => {
+module.exports.log = (byteArray, text) => {
     if (text) text += "\n\t";
     console.log(byteArrayToString(byteArray), text || '');
 };
-
-/**
- * Converts a byte array to string
- * @param {Array} byteArray
- * @returns {String}
- */
-const byteArrayToString = module.exports.byteArrayToString = (byteArray) => {
-    const pad2 = x => x && x.length == 1 ? '0' + x : x;
-    const bytes = Array.from(byteArray || []).map(x => pad2(x.toString(16)));
-    return `[${bytes.join(', ')}]`;
-}
 
 
 /**
@@ -35,7 +42,7 @@ const byteArrayToString = module.exports.byteArrayToString = (byteArray) => {
  * @param {Number} n Number to convert
  * @param {Number} length Length of the array
  */
-const numberToByteArray = module.exports.numberToByteArray = (n, length) => {
+module.exports.numberToByteArray = (n, length) => {
     const array = [];
     const string = '' + n;
 
@@ -56,7 +63,7 @@ const numberToByteArray = module.exports.numberToByteArray = (n, length) => {
  * Converts a byte array to a number
  * @param {Array} bytes 
  */
-const byteArrayToNumber = module.exports.byteArrayToNumber = (bytes) => {
+module.exports.byteArrayToNumber = (bytes) => {
     let string = "";
     try {
         for (let i = 0; i < bytes.length; i++)

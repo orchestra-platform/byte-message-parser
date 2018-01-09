@@ -8,24 +8,20 @@ const MessagesManager = require('./messagesManager.js');
 const utils = require('./utils.js');
 
 /**
- * @class SeriaPortHelper
- * @property {Promise} initialized
- * @property {Number} readMessageTimeout Time (in milliseconds) after which readMessage will throw an error if no data is received
+ * @class SerialPortHelper
+ * @param {Object} options 
+ * @param {string} options.path The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
+ * @param {number} [options.baudRate=9600] The baud rate of the port to be opened.
+ * @param {number} [options.stopBits=1] Must be one of these: 1 or 2.
+ * @param {string} [options.parity=none] Must be one of these: 'none', 'even', 'mark', 'odd', 'space'.
+ * @param {number} [options.dataBits=8] Must be one of these: 8, 7, 6, or 5.
+ * @param {number} [options.readMessageTimeout=60000] Time (in milliseconds) after which readMessage will throw an error if no data is received
+ * @param {Object} options.messages
+ * @param {number} options.logLevel
+ * @property {number} readMessageTimeout Time (in milliseconds) after which readMessage will throw an error if no data is received
  */
-module.exports = class SerialPortHelper extends EventEmitter {
+class SerialPortHelper extends EventEmitter {
 
-    /**
-     * Create a new serial port object for the `options.path`.
-     * In the case of invalid options, when constructing a new SerialPortHelper it will throw an error.
-     * The port will open automatically by default, which is the equivalent of calling `port.open(openCallback)` in the next tick.
-     * You can disable this by setting the option `autoOpen` to `false`.
-     * @param {String} options.path - The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
-     * @param {Number} [options.baudRate=9600] The baud rate of the port to be opened.
-     * @property {Number} [options.stopBits=1] Must be one of these: 1 or 2.
-     * @property {String} [options.parity=none] Must be one of these: 'none', 'even', 'mark', 'odd', 'space'.
-     * @param {Number} [options.dataBits=8] Must be one of these: 8, 7, 6, or 5.
-     * @param {Number} [options.readMessageTimeout=60000] Time (in milliseconds) after which readMessage will throw an error if no data is received
-     */
     constructor(options = {}) {
         super();
 
@@ -119,7 +115,8 @@ module.exports = class SerialPortHelper extends EventEmitter {
                 this._subscriptions.forEach((subscription, index, subscriptions) => {
                     if (subscription.msg != message.type)
                         return;
-                    subscription.callback(message);
+                    if (typeof subscription.callback === 'function')
+                        subscription.callback(message);
                     if (subscription.once)
                         subscriptions.splice(index, 1); // Remove subscription
                 });
@@ -132,7 +129,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
 
     /**
      * Removes N bytes from the buffer
-     * @param {Number} no Number of bytes to be removed. With n=-1 it emptys the buffer
+     * @param {Number} n Number of bytes to be removed. With n=-1 it emptys the buffer
      */
     removeFromBuffer(n) {
         if (n == -1)
@@ -143,8 +140,8 @@ module.exports = class SerialPortHelper extends EventEmitter {
 
 
     /**
-     * Send a Buffer on the serial
-     * @param {Buffer} data Buffer or array of bytes
+     * Send a Buffer or an array of bytes on the serial port
+     * @param {Buffer/Array} data Buffer or array of bytes
      */
     async writeBytes(data) {
         const sendToSerial = data => new Promise((resolve, reject) => {
@@ -160,7 +157,7 @@ module.exports = class SerialPortHelper extends EventEmitter {
      * Generate a message
      * @param {String} message
      * @param {Object} data
-     * @returns {Array} Byte array
+     * @returns {Array} Array of bytes
      */
     async sendMessage(message, data = {}) {
         const bytes = this._msgManager.generateMessage(message, data);
@@ -170,9 +167,9 @@ module.exports = class SerialPortHelper extends EventEmitter {
 
     /**
      * Subscribe to a message
-     * If options.once = true it returns a promise
-     * @param {String} options.msg Message
-     * @param {Boolean} [options.once=true] 
+     * @param {Object} options.msg Message
+     * @param {string} options.msg Message
+     * @param {boolean} [options.once=true] 
      * @param {Function} options.callback
      */
     subscribe(options) {
@@ -185,8 +182,8 @@ module.exports = class SerialPortHelper extends EventEmitter {
 
     /**
      * Read a message from the serialport
-     * @param {String} msg Message
-     * @returns {Promise} 
+     * @param {string} msg Message
+     * @returns {Promise} Promise
      */
     async readMessage(msg) {
         let resolve, reject;
@@ -216,3 +213,5 @@ module.exports = class SerialPortHelper extends EventEmitter {
     }
 
 }
+
+module.exports = SerialPortHelper;
