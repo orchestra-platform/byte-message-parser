@@ -2,7 +2,8 @@
 
 echo "Generating documentation"
 
-documentation build src/serialPortHelper.js \
+documentation build src/serialPortHelper.js src/utils.js \
+    --c scripts/documentation.js \
     --shallow \
     --format md \
     --output README.md \

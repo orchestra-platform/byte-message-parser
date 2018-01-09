@@ -2,12 +2,62 @@
 
 ### Table of Contents
 
+-   [utils](#utils)
+    -   [wait](#wait)
+    -   [byteArrayToString](#bytearraytostring)
+    -   [log](#log)
+    -   [numberToByteArray](#numbertobytearray)
+    -   [byteArrayToNumber](#bytearraytonumber)
 -   [SerialPortHelper](#serialporthelper)
     -   [removeFromBuffer](#removefrombuffer)
     -   [writeBytes](#writebytes)
     -   [sendMessage](#sendmessage)
     -   [subscribe](#subscribe)
     -   [readMessage](#readmessage)
+
+## utils
+
+### wait
+
+**Parameters**
+
+-   `millis` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** milliseconds
+
+### byteArrayToString
+
+Converts a byte array to string
+
+**Parameters**
+
+-   `byteArray` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
+
+Returns **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### log
+
+Prints a byte array as hex values
+
+**Parameters**
+
+-   `byteArray` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
+-   `text` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+### numberToByteArray
+
+Converts a number to a byte array
+
+**Parameters**
+
+-   `n` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Number to convert
+-   `length` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Length of the array
+
+### byteArrayToNumber
+
+Converts a byte array to a number
+
+**Parameters**
+
+-   `bytes` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
 
 ## SerialPortHelper
 
