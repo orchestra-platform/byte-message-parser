@@ -20,7 +20,7 @@ module.exports.wait = millis => new Promise(resolve => setTimeout(resolve, milli
 module.exports.byteArrayToString = (byteArray) => {
     const pad2 = x => x && x.length == 1 ? '0' + x : x;
     const bytes = Array.from(byteArray || [])
-        .map(x => x ? pad2(x.toString(16)) : '?');
+        .map(x => x !== undefined ? pad2(x.toString(16)) : '?');
     return `[${bytes.join(', ')}]`;
 }
 const byteArrayToString = module.exports.byteArrayToString;
