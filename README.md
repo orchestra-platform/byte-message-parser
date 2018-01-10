@@ -14,6 +14,7 @@
     -   [sendMessage](#sendmessage)
     -   [subscribe](#subscribe)
     -   [readMessage](#readmessage)
+    -   [close](#close)
 
 ## utils
 
@@ -121,3 +122,7 @@ Read a message from the serialport
 -   `msg` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Message
 
 Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** Promise
+
+### close
+
+Close the serial port connection

@@ -77,8 +77,12 @@ class SerialPortHelper extends EventEmitter {
 
     // This funciton is call when new data is received on the serial port
     _handleSerialPortData(data) {
+        // Convert data to an array if needed
+        if (false === Array.isArray(data))
+            data = Array.from(data);
+
         // Store the new data
-        this._log.d(this._name, '_handleSerialPortData', 'Received', utils.byteArrayToString(data));
+        // this._log.d(this._name, '_handleSerialPortData', 'Received', utils.byteArrayToString(data));
         // this._log('ResponseByteBuffer = ', utils.byteArrayToString(this._byteBuffer));
 
         if (!this._isReadingMessage) {
@@ -90,7 +94,7 @@ class SerialPortHelper extends EventEmitter {
                 }
                 // We don't know what this means, we just ignore the byte
                 // Ideally this should never happen 😅
-                const byteString = utils.byteArrayToString(data[0]);
+                const byteString = utils.byteArrayToString([data[0]]);
                 this._log.w(this._name, `*** Ignored ${byteString}`);
                 data.shift();
             }
@@ -210,6 +214,19 @@ class SerialPortHelper extends EventEmitter {
         this.subscribe({ msg, once: true, callback });
 
         return promise;
+    }
+
+
+    /**
+     * Close the serial port connection
+     */
+    async close() {
+        if (this._serialPort.isOpen && !this._serialPort.closing) {
+            await this._serialPort.close();
+            this._log.i(this._name, 'close', 'Serial port Closed');
+            return { alreadyClosed: false };
+        }
+        return { alreadyClosed: true };
     }
 
 }
