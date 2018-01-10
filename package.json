@@ -1,6 +1,6 @@
 {
   "name": "@orchestra-platform/serial-port",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "serial-port",
   "main": "index.js",
   "scripts": {
