@@ -196,19 +196,13 @@ class SerialPortHelper extends EventEmitter {
             reject = _reject;
         });
 
-        let pending = true;
-        const timeout = setInterval(_ => {
-            if (pending) {
-                pending = false;
-                reject(new Error('Timeout'));
-            }
+        const timeout = setTimeout(_ => {
+            reject(new Error('Timeout'));
         }, this.readMessageTimeout);
 
         const callback = msg => {
-            if (pending) {
-                pending = false;
-                resolve(msg);
-            }
+            clearTimeout(timeout);
+            resolve(msg);
         }
 
         this.subscribe({ msg, once: true, callback });
