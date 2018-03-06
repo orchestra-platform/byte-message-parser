@@ -3,8 +3,6 @@
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
 const Logger = require('@orchestra-platform/logger');
-
-const MessagesManager = require('./messagesManager.js');
 const utils = require('./utils.js');
 
 /**
@@ -33,11 +31,17 @@ class SerialPortHelper extends EventEmitter {
         if (!parity) parity = 'none';
         if (!dataBits) dataBits = 8;
 
-        // Check messages
-        if (!options.messages)
-            throw new Error('Invalid message definitions');
-        this._messages = options.messages;
-        this._msgManager = new MessagesManager(this._messages.all);
+        // Check isMessageStart
+        if (!options.isMessageStart)
+            throw new Error('Invalid isMessageStart funciton');
+        // TODO: check if it's a funciton
+        this._isMessageStart = options.isMessageStart;
+
+        // Check recognizeMessage
+        if (!options.recognizeMessage)
+            throw new Error('Invalid recognizeMessage funciton');
+        // TODO: check if it's a funciton
+        this._recognizeMessage = options.recognizeMessage;
 
         // Log
         this._name = `SerialPortHelper-${name}` || `SerialPortHelper-${Math.random().toString(36).substring(7)}`;
@@ -87,7 +91,7 @@ class SerialPortHelper extends EventEmitter {
 
         if (!this._isReadingMessage) {
             while (data.length > 0) {
-                const isStart = this._messages.isMessageStart(data);
+                const isStart = this._isMessageStart(data);
                 if (isStart) {
                     this._isReadingMessage = true;
                     break;
@@ -104,7 +108,7 @@ class SerialPortHelper extends EventEmitter {
             this._byteBuffer.push(byte);
             // console.log('byteBuffer =', utils.byteArrayToString(this._byteBuffer));
 
-            const message = this._msgManager.recognizeMessage(this._byteBuffer);
+            const message = this._recognizeMessage(this._byteBuffer);
             if (message) {
                 // Remove the message from the byteBuffer
                 this.removeFromBuffer(message.bytes.length);
@@ -136,6 +140,7 @@ class SerialPortHelper extends EventEmitter {
      * @param {Number} n Number of bytes to be removed. With n=-1 it emptys the buffer
      */
     removeFromBuffer(n) {
+        this._log.i(this._name, 'removeFromBuffer', n);
         if (n == -1)
             n = this._byteBuffer.length;
         for (let i = 0; i < n && this._byteBuffer.length > 0; i++)
@@ -159,12 +164,13 @@ class SerialPortHelper extends EventEmitter {
 
     /**
      * Generate a message
-     * @param {String} message
-     * @param {Object} data
+     * @param {Array<Byte>} bytes
      * @returns {Array} Array of bytes
      */
-    async sendMessage(message, data = {}) {
-        const bytes = this._msgManager.generateMessage(message, data);
+    async sendMessage(bytes) {
+        this._log.i(this._name, 'sendMessage', 'sending...', bytes);
+        if (false === Array.isArray(bytes))
+            throw new Error(`Invalid byte sequence ${bytes}`);
         await this.writeBytes(bytes);
     }
 

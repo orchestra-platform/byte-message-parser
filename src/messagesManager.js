@@ -1,31 +1,28 @@
 'use strict';
 
 module.exports = class MessagesManager {
-    constructor(messages) {
-        if (!messages)
-            throw new Error('Invalid messages');
-        this._messages = messages;
-    }
-
-
-    /**
-     * Return the requested message
-     * @param {string} msg Message code 
-     */
-    get(msg) {
-        if (!this._messages[msg])
-            throw new Error('Invalid message');
-        return this._messages[msg];
-    }
-
 
     /**
      * Return pattern of the requested message
-     * @param {string} msg Message code 
+     * @param {Message} msg - 
      */
-    getPattern(msg) {
-        return this.get(msg)
-            .reduce((pattern, val) => pattern.concat(val.pattern), []);
+    static getPattern(msg) {
+        MessagesManager.checkMessage(msg);
+        const pattern = msg.reduce((pattern, val) => {
+            return pattern.concat(val.pattern)
+        }, []);
+        // for (let i = 0; i < pattern.length; i++) {
+        //     if (typeof pattern[i] !== 'function')
+        //         continue;
+        //     // Remove the function
+        //     const callback = pattern.splice(i, 1)[0];
+        //     // Add the pattern
+        //     const patternFragment = callback({
+        //         message: pattern.splice(0, 1)
+        //     });
+        //     pattern.splice(i, 0, ...patternFragment);
+        // }
+        return pattern;
     }
 
     /**
@@ -34,10 +31,13 @@ module.exports = class MessagesManager {
      * @return {Boolean} Returns false if no message is found
      * @return {Object} Returns an Object {type,bytes,values} if a message is found
      */
-    recognizeMessage(bytes) {
-        for (const msgName in this._messages) {
-            const msg = this._messages[msgName];
-            const pattern = this.getPattern(msgName);
+    static recognizeMessage(bytes, messages) {
+        // TODO: check messages
+
+        for (const msgName in messages) {
+
+            const msg = messages[msgName];
+            const pattern = this.getPattern(msg);
             if (pattern.length > bytes.length)
                 continue;
 
@@ -48,12 +48,21 @@ module.exports = class MessagesManager {
                     continue;
 
                 // Handle non static patterns
-                let value = pattern[i];
-                if (typeof pattern[i] === 'function')
-                    value = pattern[i]({
-                        precedent: bytes.slice(0, i)
-                    });
+                if (typeof pattern[i] === 'function') {
+                    // Remove the function
+                    const callback = pattern.splice(i, 1)[0];
 
+                    // Add the pattern
+                    const precedent = bytes.slice(0, i);
+                    const patternFragment = callback({ precedent });
+                    pattern.splice(i, 0, ...patternFragment);
+
+                    // Evaluate again this byte
+                    i--;
+                    continue;
+                }
+
+                let value = pattern[i];
                 if (value != bytes[i])
                     recognized = false;
             }
@@ -82,12 +91,12 @@ module.exports = class MessagesManager {
 
     /**
      * Generate a message
-     * @param {String} message
-     * @param {Object} data
+     * @param {Message} msg - 
+     * @param {Object} data -
      * @returns {Array} Byte array
      */
-    generateMessage(message, data = {}) {
-        const msg = this.get(message);
+    static generateMessage(msg, data = {}) {
+        MessagesManager.checkMessage(msg);
         const packet = [];
         for (const fragment of msg) {
             if (data[fragment.name] != undefined) {
@@ -109,4 +118,12 @@ module.exports = class MessagesManager {
         return packet;
     }
 
+
+    /**
+     * 
+     * @param {Message} msg 
+     */
+    static checkMessage(msg) {
+        return true;
+    }
 }
