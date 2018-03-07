@@ -1,6 +1,25 @@
 'use strict';
 
-module.exports = class MessagesManager {
+/**
+ * Message Fragment
+ * @typedef {Object} MessageFragment
+ * @property {String} name - Name of the fragment
+ * @property {String} [desc] - Description of the fragment
+ * @property {Array} pattern - Array of bytes, function or undefined (undefined works as a wildcard)
+ * @property {Array} default - Used when a message is created
+ */
+
+
+/**
+ * Message
+ * @typedef {MessageFragment[]} Message
+ */
+
+
+/**
+ * @class MessagesManager
+ */
+class MessagesManager {
 
     /**
      * Return pattern of the requested message
@@ -11,23 +30,14 @@ module.exports = class MessagesManager {
         const pattern = msg.reduce((pattern, val) => {
             return pattern.concat(val.pattern)
         }, []);
-        // for (let i = 0; i < pattern.length; i++) {
-        //     if (typeof pattern[i] !== 'function')
-        //         continue;
-        //     // Remove the function
-        //     const callback = pattern.splice(i, 1)[0];
-        //     // Add the pattern
-        //     const patternFragment = callback({
-        //         message: pattern.splice(0, 1)
-        //     });
-        //     pattern.splice(i, 0, ...patternFragment);
-        // }
         return pattern;
     }
+
 
     /**
      * Recognize a message from an array of bytes
      * @param {Array} bytes 
+     * @param {Message[]} messages 
      * @return {Boolean} Returns false if no message is found
      * @return {Object} Returns an Object {type,bytes,values} if a message is found
      */
@@ -120,10 +130,13 @@ module.exports = class MessagesManager {
 
 
     /**
-     * 
+     * Check if a message is formally corrected
      * @param {Message} msg 
      */
     static checkMessage(msg) {
+        // TODO:
         return true;
     }
 }
+
+module.exports = MessagesManager;

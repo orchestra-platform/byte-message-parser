@@ -2,81 +2,52 @@
 
 ### Table of Contents
 
--   [utils](#utils)
-    -   [wait](#wait)
-    -   [byteArrayToString](#bytearraytostring)
-    -   [log](#log)
-    -   [numberToByteArray](#numbertobytearray)
-    -   [byteArrayToNumber](#bytearraytonumber)
--   [SerialPortHelper](#serialporthelper)
-    -   [removeFromBuffer](#removefrombuffer)
-    -   [writeBytes](#writebytes)
-    -   [sendMessage](#sendmessage)
-    -   [subscribe](#subscribe)
-    -   [readMessage](#readmessage)
-    -   [close](#close)
+-   [MessageFragment][1]
+-   [SerialPortHelper][2]
+    -   [removeFromBuffer][3]
+    -   [writeBytes][4]
+    -   [sendMessage][5]
+    -   [subscribe][6]
+    -   [readMessage][7]
+    -   [close][8]
+-   [MessagesManager][9]
+    -   [getPattern][10]
+    -   [recognizeMessage][11]
+    -   [generateMessage][12]
+    -   [checkMessage][13]
+-   [Message][14]
 
-## utils
+## MessageFragment
 
-### wait
+Message Fragment
 
-**Parameters**
+Type: [Object][15]
 
--   `millis` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** milliseconds
+**Properties**
 
-### byteArrayToString
-
-Converts a byte array to string
-
-**Parameters**
-
--   `byteArray` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
-
-Returns **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
-
-### log
-
-Prints a byte array as hex values
-
-**Parameters**
-
--   `byteArray` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
--   `text` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
-
-### numberToByteArray
-
-Converts a number to a byte array
-
-**Parameters**
-
--   `n` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Number to convert
--   `length` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Length of the array
-
-### byteArrayToNumber
-
-Converts a byte array to a number
-
-**Parameters**
-
--   `bytes` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
+-   `name` **[String][16]** Name of the fragment
+-   `desc` **[String][16]?** Description of the fragment
+-   `pattern` **[Array][17]** Array of bytes, function or undefined (undefined works as a wildcard)
+-   `default` **[Array][17]** Used when a message is created
 
 ## SerialPortHelper
 
 **Parameters**
 
--   `options` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    -   `options.path` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
-    -   `options.baudRate` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The baud rate of the port to be opened. (optional, default `9600`)
-    -   `options.stopBits` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Must be one of these: 1 or 2. (optional, default `1`)
-    -   `options.parity` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Must be one of these: 'none', 'even', 'mark', 'odd', 'space'. (optional, default `none`)
-    -   `options.dataBits` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Must be one of these: 8, 7, 6, or 5. (optional, default `8`)
-    -   `options.readMessageTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Time (in milliseconds) after which readMessage will throw an error if no data is received (optional, default `60000`)
-    -   `options.messages` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    -   `options.logLevel` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `options` **[Object][15]** 
+    -   `options.path` **[String][16]** The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
+    -   `options.baudRate` **[Number][18]** The baud rate of the port to be opened. (optional, default `9600`)
+    -   `options.stopBits` **[Number][18]** Must be one of these: 1 or 2. (optional, default `1`)
+    -   `options.parity` **[String][16]** Must be one of these: 'none', 'even', 'mark', 'odd', 'space'. (optional, default `none`)
+    -   `options.dataBits` **[Number][18]** Must be one of these: 8, 7, 6, or 5. (optional, default `8`)
+    -   `options.readMessageTimeout` **[Number][18]** Time (in milliseconds) after which readMessage will throw an error if no data is received (optional, default `60000`)
+    -   `options.isMessageStart` **[Object][15]** 
+    -   `options.recognizeMessage` **[Object][15]** Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
+    -   `options.logLevel` **[Number][18]** See @orchestra-platform/logger
 
 **Properties**
 
--   `readMessageTimeout` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Time (in milliseconds) after which readMessage will throw an error if no data is received
+-   `readMessageTimeout` **[Number][18]** Time (in milliseconds) after which readMessage will throw an error if no data is received
 
 ### removeFromBuffer
 
@@ -84,7 +55,7 @@ Removes N bytes from the buffer
 
 **Parameters**
 
--   `n` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Number of bytes to be removed. With n=-1 it emptys the buffer
+-   `n` **[Number][18]** Number of bytes to be removed. With n=-1 it emptys the buffer
 
 ### writeBytes
 
@@ -100,10 +71,9 @@ Generate a message
 
 **Parameters**
 
--   `message` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `data` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+-   `bytes` **[Array][17]&lt;Byte>** 
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** Array of bytes
+Returns **[Array][17]** Array of bytes
 
 ### subscribe
 
@@ -119,10 +89,102 @@ Read a message from the serialport
 
 **Parameters**
 
--   `msg` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Message
+-   `msg` **[String][16]** Message
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** Promise
+Returns **[Promise][19]** Promise
 
 ### close
 
 Close the serial port connection
+
+## MessagesManager
+
+### getPattern
+
+Return pattern of the requested message
+
+**Parameters**
+
+-   `msg` **[Message][20]** \-
+
+### recognizeMessage
+
+Recognize a message from an array of bytes
+
+**Parameters**
+
+-   `bytes` **[Array][17]** 
+-   `messages` **[Array][17]&lt;[Message][20]>** 
+
+Returns **[Boolean][21]** Returns false if no message is found
+
+Returns **[Object][15]** Returns an Object {type,bytes,values} if a message is found
+
+### generateMessage
+
+Generate a message
+
+**Parameters**
+
+-   `msg` **[Message][20]** \-
+-   `data` **[Object][15]** \- (optional, default `{}`)
+
+Returns **[Array][17]** Byte array
+
+### checkMessage
+
+Check if a message is formally corrected
+
+**Parameters**
+
+-   `msg` **[Message][20]** 
+
+## Message
+
+Message
+
+Type: [Array][17]&lt;[MessageFragment][22]>
+
+[1]: #messagefragment
+
+[2]: #serialporthelper
+
+[3]: #removefrombuffer
+
+[4]: #writebytes
+
+[5]: #sendmessage
+
+[6]: #subscribe
+
+[7]: #readmessage
+
+[8]: #close
+
+[9]: #messagesmanager
+
+[10]: #getpattern
+
+[11]: #recognizemessage
+
+[12]: #generatemessage
+
+[13]: #checkmessage
+
+[14]: #message
+
+[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+[20]: #message
+
+[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[22]: #messagefragment

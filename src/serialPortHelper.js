@@ -8,15 +8,16 @@ const utils = require('./utils.js');
 /**
  * @class SerialPortHelper
  * @param {Object} options 
- * @param {string} options.path The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
- * @param {number} [options.baudRate=9600] The baud rate of the port to be opened.
- * @param {number} [options.stopBits=1] Must be one of these: 1 or 2.
- * @param {string} [options.parity=none] Must be one of these: 'none', 'even', 'mark', 'odd', 'space'.
- * @param {number} [options.dataBits=8] Must be one of these: 8, 7, 6, or 5.
- * @param {number} [options.readMessageTimeout=60000] Time (in milliseconds) after which readMessage will throw an error if no data is received
- * @param {Object} options.messages
- * @param {number} options.logLevel
- * @property {number} readMessageTimeout Time (in milliseconds) after which readMessage will throw an error if no data is received
+ * @param {String} options.path The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
+ * @param {Number} [options.baudRate=9600] The baud rate of the port to be opened.
+ * @param {Number} [options.stopBits=1] Must be one of these: 1 or 2.
+ * @param {String} [options.parity=none] Must be one of these: 'none', 'even', 'mark', 'odd', 'space'.
+ * @param {Number} [options.dataBits=8] Must be one of these: 8, 7, 6, or 5.
+ * @param {Number} [options.readMessageTimeout=60000] Time (in milliseconds) after which readMessage will throw an error if no data is received
+ * @param {Object} options.isMessageStart 
+ * @param {Object} options.recognizeMessage Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
+ * @param {Number} options.logLevel See @orchestra-platform/logger
+ * @property {Number} readMessageTimeout Time (in milliseconds) after which readMessage will throw an error if no data is received
  */
 class SerialPortHelper extends EventEmitter {
 
@@ -178,8 +179,8 @@ class SerialPortHelper extends EventEmitter {
     /**
      * Subscribe to a message
      * @param {Object} options.msg Message
-     * @param {string} options.msg Message
-     * @param {boolean} [options.once=true] 
+     * @param {String} options.msg Message
+     * @param {Boolean} [options.once=true] 
      * @param {Function} options.callback
      */
     subscribe(options) {
@@ -192,7 +193,7 @@ class SerialPortHelper extends EventEmitter {
 
     /**
      * Read a message from the serialport
-     * @param {string} msg Message
+     * @param {String} msg Message
      * @returns {Promise} Promise
      */
     async readMessage(msg) {
