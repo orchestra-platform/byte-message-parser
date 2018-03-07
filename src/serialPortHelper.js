@@ -122,7 +122,7 @@ class SerialPortHelper extends EventEmitter {
 
                 // Notify subscriptions
                 this._subscriptions.forEach((subscription, index, subscriptions) => {
-                    if (subscription.msg != message.type)
+                    if (subscription.msg.name != message.type)
                         return;
                     if (typeof subscription.callback === 'function')
                         subscription.callback(message);
@@ -178,8 +178,8 @@ class SerialPortHelper extends EventEmitter {
 
     /**
      * Subscribe to a message
-     * @param {Object} options.msg Message
-     * @param {String} options.msg Message
+     * @param {Object} options
+     * @param {Message} options.msg Message
      * @param {Boolean} [options.once=true] 
      * @param {Function} options.callback
      */

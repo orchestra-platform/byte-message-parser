@@ -2,52 +2,112 @@
 
 ### Table of Contents
 
--   [MessageFragment][1]
--   [SerialPortHelper][2]
-    -   [removeFromBuffer][3]
-    -   [writeBytes][4]
-    -   [sendMessage][5]
-    -   [subscribe][6]
-    -   [readMessage][7]
-    -   [close][8]
--   [MessagesManager][9]
-    -   [getPattern][10]
-    -   [recognizeMessage][11]
-    -   [generateMessage][12]
-    -   [checkMessage][13]
--   [Message][14]
+-   [MessagesManager][1]
+    -   [getMessage][2]
+    -   [getMessages][3]
+    -   [recognizeMessage][4]
+-   [Message][5]
+    -   [getPattern][6]
+    -   [generateBytes][7]
+-   [MessageFragment][8]
+-   [SerialPortHelper][9]
+    -   [removeFromBuffer][10]
+    -   [writeBytes][11]
+    -   [sendMessage][12]
+    -   [subscribe][13]
+    -   [readMessage][14]
+    -   [close][15]
+
+## MessagesManager
+
+**Parameters**
+
+-   `messages` **[Array][16]&lt;[Message][17]>** 
+
+### getMessage
+
+**Parameters**
+
+-   `name` **[String][18]** Message name
+
+### getMessages
+
+**Parameters**
+
+-   `names`  
+-   `name` **[Array][16]&lt;[String][18]>** Array of message names
+
+### recognizeMessage
+
+Recognize a message from an array of bytes
+
+**Parameters**
+
+-   `bytes` **[Array][16]** 
+-   `messages` **[Array][16]&lt;[Message][17]>** 
+
+Returns **[Boolean][19]** Returns false if no message is found
+
+Returns **[Object][20]** Returns an Object {type,bytes,values} if a message is found
+
+## Message
+
+**Parameters**
+
+-   `name` **[String][18]** 
+-   `fragments` **[Array][16]&lt;[MessageFragment][21]>** 
+
+**Properties**
+
+-   `name` **[String][18]** 
+
+### getPattern
+
+Return pattern
+
+Returns **[Array][16]** Array of Bytes and Function that return array of bytes
+
+### generateBytes
+
+Generate the raw message
+
+**Parameters**
+
+-   `data` **[Object][20]** Dictionary with array of bytes
+
+Returns **[Array][16]&lt;[Number][22]>** Array of bytes
 
 ## MessageFragment
 
 Message Fragment
 
-Type: [Object][15]
+Type: [Object][20]
 
 **Properties**
 
--   `name` **[String][16]** Name of the fragment
--   `desc` **[String][16]?** Description of the fragment
--   `pattern` **[Array][17]** Array of bytes, function or undefined (undefined works as a wildcard)
--   `default` **[Array][17]** Used when a message is created
+-   `name` **[String][18]** Name of the fragment
+-   `desc` **[String][18]?** Description of the fragment
+-   `pattern` **[Array][16]** Array of bytes, function or undefined (undefined works as a wildcard)
+-   `default` **[Array][16]** Used when a message is created
 
 ## SerialPortHelper
 
 **Parameters**
 
--   `options` **[Object][15]** 
-    -   `options.path` **[String][16]** The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
-    -   `options.baudRate` **[Number][18]** The baud rate of the port to be opened. (optional, default `9600`)
-    -   `options.stopBits` **[Number][18]** Must be one of these: 1 or 2. (optional, default `1`)
-    -   `options.parity` **[String][16]** Must be one of these: 'none', 'even', 'mark', 'odd', 'space'. (optional, default `none`)
-    -   `options.dataBits` **[Number][18]** Must be one of these: 8, 7, 6, or 5. (optional, default `8`)
-    -   `options.readMessageTimeout` **[Number][18]** Time (in milliseconds) after which readMessage will throw an error if no data is received (optional, default `60000`)
-    -   `options.isMessageStart` **[Object][15]** 
-    -   `options.recognizeMessage` **[Object][15]** Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
-    -   `options.logLevel` **[Number][18]** See @orchestra-platform/logger
+-   `options` **[Object][20]** 
+    -   `options.path` **[String][18]** The system path of the serial port you want to open. For example, `/dev/tty.XXX` on Mac/Linux, or `COM1` on Windows.
+    -   `options.baudRate` **[Number][22]** The baud rate of the port to be opened. (optional, default `9600`)
+    -   `options.stopBits` **[Number][22]** Must be one of these: 1 or 2. (optional, default `1`)
+    -   `options.parity` **[String][18]** Must be one of these: 'none', 'even', 'mark', 'odd', 'space'. (optional, default `none`)
+    -   `options.dataBits` **[Number][22]** Must be one of these: 8, 7, 6, or 5. (optional, default `8`)
+    -   `options.readMessageTimeout` **[Number][22]** Time (in milliseconds) after which readMessage will throw an error if no data is received (optional, default `60000`)
+    -   `options.isMessageStart` **[Object][20]** 
+    -   `options.recognizeMessage` **[Object][20]** Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
+    -   `options.logLevel` **[Number][22]** See @orchestra-platform/logger
 
 **Properties**
 
--   `readMessageTimeout` **[Number][18]** Time (in milliseconds) after which readMessage will throw an error if no data is received
+-   `readMessageTimeout` **[Number][22]** Time (in milliseconds) after which readMessage will throw an error if no data is received
 
 ### removeFromBuffer
 
@@ -55,7 +115,7 @@ Removes N bytes from the buffer
 
 **Parameters**
 
--   `n` **[Number][18]** Number of bytes to be removed. With n=-1 it emptys the buffer
+-   `n` **[Number][22]** Number of bytes to be removed. With n=-1 it emptys the buffer
 
 ### writeBytes
 
@@ -71,9 +131,9 @@ Generate a message
 
 **Parameters**
 
--   `bytes` **[Array][17]&lt;Byte>** 
+-   `bytes` **[Array][16]&lt;Byte>** 
 
-Returns **[Array][17]** Array of bytes
+Returns **[Array][16]** Array of bytes
 
 ### subscribe
 
@@ -81,7 +141,10 @@ Subscribe to a message
 
 **Parameters**
 
--   `options`  
+-   `options` **[Object][20]** 
+    -   `options.msg` **[Message][17]** Message
+    -   `options.once` **[Boolean][19]**  (optional, default `true`)
+    -   `options.callback` **[Function][23]** 
 
 ### readMessage
 
@@ -89,102 +152,58 @@ Read a message from the serialport
 
 **Parameters**
 
--   `msg` **[String][16]** Message
+-   `msg` **[String][18]** Message
 
-Returns **[Promise][19]** Promise
+Returns **[Promise][24]** Promise
 
 ### close
 
 Close the serial port connection
 
-## MessagesManager
+[1]: #messagesmanager
 
-### getPattern
+[2]: #getmessage
 
-Return pattern of the requested message
+[3]: #getmessages
 
-**Parameters**
+[4]: #recognizemessage
 
--   `msg` **[Message][20]** \-
+[5]: #message
 
-### recognizeMessage
+[6]: #getpattern
 
-Recognize a message from an array of bytes
+[7]: #generatebytes
 
-**Parameters**
+[8]: #messagefragment
 
--   `bytes` **[Array][17]** 
--   `messages` **[Array][17]&lt;[Message][20]>** 
+[9]: #serialporthelper
 
-Returns **[Boolean][21]** Returns false if no message is found
+[10]: #removefrombuffer
 
-Returns **[Object][15]** Returns an Object {type,bytes,values} if a message is found
+[11]: #writebytes
 
-### generateMessage
+[12]: #sendmessage
 
-Generate a message
+[13]: #subscribe
 
-**Parameters**
+[14]: #readmessage
 
--   `msg` **[Message][20]** \-
--   `data` **[Object][15]** \- (optional, default `{}`)
+[15]: #close
 
-Returns **[Array][17]** Byte array
+[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-### checkMessage
+[17]: #message
 
-Check if a message is formally corrected
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-**Parameters**
+[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
--   `msg` **[Message][20]** 
+[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-## Message
+[21]: #messagefragment
 
-Message
+[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-Type: [Array][17]&lt;[MessageFragment][22]>
+[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[1]: #messagefragment
-
-[2]: #serialporthelper
-
-[3]: #removefrombuffer
-
-[4]: #writebytes
-
-[5]: #sendmessage
-
-[6]: #subscribe
-
-[7]: #readmessage
-
-[8]: #close
-
-[9]: #messagesmanager
-
-[10]: #getpattern
-
-[11]: #recognizemessage
-
-[12]: #generatemessage
-
-[13]: #checkmessage
-
-[14]: #message
-
-[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
-
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
-
-[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
-
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
-
-[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
-
-[20]: #message
-
-[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-
-[22]: #messagefragment
+[24]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise

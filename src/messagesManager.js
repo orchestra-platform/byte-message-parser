@@ -1,36 +1,34 @@
 'use strict';
 
-/**
- * Message Fragment
- * @typedef {Object} MessageFragment
- * @property {String} name - Name of the fragment
- * @property {String} [desc] - Description of the fragment
- * @property {Array} pattern - Array of bytes, function or undefined (undefined works as a wildcard)
- * @property {Array} default - Used when a message is created
- */
-
-
-/**
- * Message
- * @typedef {MessageFragment[]} Message
- */
-
+const Message = require('./message.js');
 
 /**
  * @class MessagesManager
+ * @param {Message[]} messages
  */
 class MessagesManager {
 
+    constructor(messages) {
+        this._messages = messages;
+    }
+
+
     /**
-     * Return pattern of the requested message
-     * @param {Message} msg - 
+     * @param {String} name Message name
      */
-    static getPattern(msg) {
-        MessagesManager.checkMessage(msg);
-        const pattern = msg.reduce((pattern, val) => {
-            return pattern.concat(val.pattern)
-        }, []);
-        return pattern;
+    getMessage(name) {
+        for (const msg of this._messages)
+            if (msg.name == name)
+                return msg;
+        throw new Error(`Message ${this._messages} not found`);
+    }
+
+
+    /**
+     * @param {String[]} name Array of message names
+     */
+    getMessages(names) {
+        return names.forEach(name => this.getMessage(name));
     }
 
 
@@ -41,13 +39,12 @@ class MessagesManager {
      * @return {Boolean} Returns false if no message is found
      * @return {Object} Returns an Object {type,bytes,values} if a message is found
      */
-    static recognizeMessage(bytes, messages) {
+    recognizeMessage(bytes) {
         // TODO: check messages
 
-        for (const msgName in messages) {
+        for (const msg of this._messages) {
 
-            const msg = messages[msgName];
-            const pattern = this.getPattern(msg);
+            const pattern = msg.getPattern(msg);
             if (pattern.length > bytes.length)
                 continue;
 
@@ -83,14 +80,14 @@ class MessagesManager {
             const msgBytes = bytes.slice(0, pattern.length);
             const values = {};
             let index = 0;
-            for (const fragment of msg) {
+            for (const fragment of msg.fragments) {
                 const bytes = msgBytes.slice(index, index + fragment.pattern.length);
                 index += fragment.pattern.length;
                 values[fragment.name] = bytes;
             }
 
             return {
-                type: msgName,
+                type: msg.name,
                 bytes: msgBytes,
                 values: values
             }
@@ -98,45 +95,6 @@ class MessagesManager {
         return false;
     }
 
-
-    /**
-     * Generate a message
-     * @param {Message} msg - 
-     * @param {Object} data -
-     * @returns {Array} Byte array
-     */
-    static generateMessage(msg, data = {}) {
-        MessagesManager.checkMessage(msg);
-        const packet = [];
-        for (const fragment of msg) {
-            if (data[fragment.name] != undefined) {
-                // Set custom value
-                packet.push(...data[fragment.name]);
-            } else if (fragment.default != undefined) {
-                // Set default value
-                if (Array.isArray(fragment.default)) {
-                    packet.push(...fragment.default);
-                } else if (typeof fragment.default === 'function') {
-                    const defaultBytes = fragment.default({ precedent: packet });
-                    packet.push(...defaultBytes);
-                } else
-                    throw new Error(`Invalid default value for ${fragment.name}`);
-            } else {
-                throw new Error(`Missing parameter ${fragment.name}`);
-            }
-        }
-        return packet;
-    }
-
-
-    /**
-     * Check if a message is formally corrected
-     * @param {Message} msg 
-     */
-    static checkMessage(msg) {
-        // TODO:
-        return true;
-    }
 }
 
 module.exports = MessagesManager;
