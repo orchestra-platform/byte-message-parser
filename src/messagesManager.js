@@ -18,7 +18,7 @@ class MessagesManager {
      */
     getMessage(name) {
         for (const msg of this._messages)
-            if (msg.name == name)
+            if (msg.name === name)
                 return msg;
         throw new Error(`Message ${this._messages} not found`);
     }
