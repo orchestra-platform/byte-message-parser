@@ -73,7 +73,7 @@ Generate the raw message
 
 **Parameters**
 
--   `data` **[Object][20]** Dictionary with array of bytes
+-   `data` **[Object][20]** Dictionary with array of bytes (optional, default `{}`)
 
 Returns **[Array][16]&lt;[Number][22]>** Array of bytes
 

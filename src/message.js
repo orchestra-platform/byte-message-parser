@@ -40,10 +40,10 @@ class Message {
 
     /**
      * Generate the raw message
-     * @param {Object} data Dictionary with array of bytes
+     * @param {Object} [data={}] Dictionary with array of bytes
      * @returns {Number[]} Array of bytes
      */
-    generateBytes(data) {
+    generateBytes(data = {}) {
         const packet = [];
         for (const fragment of this.fragments) {
             if (data[fragment.name] != undefined) {
