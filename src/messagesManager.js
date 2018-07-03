@@ -20,7 +20,7 @@ class MessagesManager {
         for (const msg of this._messages)
             if (msg.name === name)
                 return msg;
-        throw new Error(`Message ${this._messages} not found`);
+        throw new Error(`Message ${name} not found`);
     }
 
 
