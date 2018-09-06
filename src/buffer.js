@@ -55,8 +55,6 @@ class Buffer {
         if (false === Array.isArray(data))
             data = Array.from(data);
 
-        console.log('handleData', data);
-
         if (!this._isReadingMessage) {
             while (data.length > 0) {
                 const isStart = this._isMessageStart(data);
