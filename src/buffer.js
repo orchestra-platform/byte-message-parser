@@ -142,7 +142,14 @@ class Buffer {
         });
 
         const timeout = setTimeout(_ => {
-            reject(new Error('Timeout'));
+            const msgBuffer = this._messageBuffer.map(m => m.type);
+            const error = new Error(`Timeout, current buffers: ${JSON.stringify(this._byteBuffer)}, ${JSON.stringify(msgBuffer)}`);
+            error.byteBuffer = this._byteBuffer;
+            error.msgBuffer = this._messageBuffer.map(m => ({
+                type: m.type,
+                data: m.bytes
+            }));
+            reject(error);
         }, this.readMessageTimeout);
 
         const callback = msg => {
