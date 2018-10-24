@@ -86,7 +86,7 @@ class Buffer {
 
                 // Notify subscriptions
                 this._subscriptions.forEach((subscription, index, subscriptions) => {
-                    if (subscription.msg.name != message.type)
+                    if (subscription.all !== true && subscription.msg.name !== message.type)
                         return;
                     if (typeof subscription.callback === 'function')
                         subscription.callback(message);
@@ -118,12 +118,13 @@ class Buffer {
      * @param {Object} options
      * @param {Message} options.msg Message
      * @param {Boolean} [options.once=true] 
+     * @param {Boolean} [options.all=false] 
      * @param {Function} options.callback
      */
     subscribe(options) {
-        const { msg, once = true, callback } = options;
+        const { msg, once = true, all = false, callback } = options;
         this._subscriptions.push({
-            msg, once, callback
+            msg, once, all, callback
         });
     }
 
