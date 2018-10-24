@@ -121,7 +121,7 @@ class Buffer {
      * @param {Function} options.callback
      */
     subscribe(options) {
-        const { msg, once, callback } = options;
+        const { msg, once = true, callback } = options;
         this._subscriptions.push({
             msg, once, callback
         });
