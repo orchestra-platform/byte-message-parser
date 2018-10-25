@@ -120,12 +120,16 @@ class Buffer {
      * @param {Boolean} [options.once=true] 
      * @param {Boolean} [options.all=false] 
      * @param {Function} options.callback
+     * @returns {Function} unsubscribe callback
      */
     subscribe(options) {
         const { msg, once = true, all = false, callback } = options;
-        this._subscriptions.push({
-            msg, once, all, callback
-        });
+        const subscription = { msg, once, all, callback };
+        this._subscriptions.push(subscription);
+        return _ => {
+            const index = this._subscriptions.indexOf(subscription);
+            if (index !== -1) this._subscriptions.splice(index, 1);
+        };
     }
 
 
