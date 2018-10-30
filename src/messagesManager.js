@@ -1,43 +1,50 @@
 'use strict';
 
-module.exports = class MessagesManager {
+const Message = require('./message.js');
+
+/**
+ * @class MessagesManager
+ * @param {Message[]} messages
+ */
+class MessagesManager {
+
     constructor(messages) {
-        if (!messages)
-            throw new Error('Invalid messages');
         this._messages = messages;
     }
 
 
     /**
-     * Return the requested message
-     * @param {string} msg Message code 
+     * @param {String} name Message name
      */
-    get(msg) {
-        if (!this._messages[msg])
-            throw new Error('Invalid message');
-        return this._messages[msg];
+    getMessage(name) {
+        for (const msg of this._messages)
+            if (msg.name === name)
+                return msg;
+        throw new Error(`Message ${name} not found`);
     }
 
 
     /**
-     * Return pattern of the requested message
-     * @param {string} msg Message code 
+     * @param {String[]} name Array of message names
      */
-    getPattern(msg) {
-        return this.get(msg)
-            .reduce((pattern, val) => pattern.concat(val.pattern), []);
+    getMessages(names) {
+        return names.forEach(name => this.getMessage(name));
     }
+
 
     /**
      * Recognize a message from an array of bytes
      * @param {Array} bytes 
+     * @param {Message[]} messages 
      * @return {Boolean} Returns false if no message is found
      * @return {Object} Returns an Object {type,bytes,values} if a message is found
      */
     recognizeMessage(bytes) {
-        for (const msgName in this._messages) {
-            const msg = this._messages[msgName];
-            const pattern = this.getPattern(msgName);
+        // TODO: check messages
+
+        for (const msg of this._messages) {
+
+            const pattern = msg.getPattern(msg);
             if (pattern.length > bytes.length)
                 continue;
 
@@ -48,12 +55,21 @@ module.exports = class MessagesManager {
                     continue;
 
                 // Handle non static patterns
-                let value = pattern[i];
-                if (typeof pattern[i] === 'function')
-                    value = pattern[i]({
-                        precedent: bytes.slice(0, i)
-                    });
+                if (typeof pattern[i] === 'function') {
+                    // Remove the function
+                    const callback = pattern.splice(i, 1)[0];
 
+                    // Add the pattern
+                    const precedent = bytes.slice(0, i);
+                    const patternFragment = callback({ precedent });
+                    pattern.splice(i, 0, ...patternFragment);
+
+                    // Evaluate again this byte
+                    i--;
+                    continue;
+                }
+
+                let value = pattern[i];
                 if (value != bytes[i])
                     recognized = false;
             }
@@ -64,14 +80,14 @@ module.exports = class MessagesManager {
             const msgBytes = bytes.slice(0, pattern.length);
             const values = {};
             let index = 0;
-            for (const fragment of msg) {
+            for (const fragment of msg.fragments) {
                 const bytes = msgBytes.slice(index, index + fragment.pattern.length);
                 index += fragment.pattern.length;
                 values[fragment.name] = bytes;
             }
 
             return {
-                type: msgName,
+                type: msg.name,
                 bytes: msgBytes,
                 values: values
             }
@@ -79,34 +95,6 @@ module.exports = class MessagesManager {
         return false;
     }
 
-
-    /**
-     * Generate a message
-     * @param {String} message
-     * @param {Object} data
-     * @returns {Array} Byte array
-     */
-    generateMessage(message, data = {}) {
-        const msg = this.get(message);
-        const packet = [];
-        for (const fragment of msg) {
-            if (data[fragment.name] != undefined) {
-                // Set custom value
-                packet.push(...data[fragment.name]);
-            } else if (fragment.default != undefined) {
-                // Set default value
-                if (Array.isArray(fragment.default)) {
-                    packet.push(...fragment.default);
-                } else if (typeof fragment.default === 'function') {
-                    const defaultBytes = fragment.default({ precedent: packet });
-                    packet.push(...defaultBytes);
-                } else
-                    throw new Error(`Invalid default value for ${fragment.name}`);
-            } else {
-                throw new Error(`Missing parameter ${fragment.name}`);
-            }
-        }
-        return packet;
-    }
-
 }
+
+module.exports = MessagesManager;
