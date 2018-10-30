@@ -148,7 +148,7 @@ class Buffer {
 
         const timeout = setTimeout(_ => {
             const msgBuffer = this._messageBuffer.map(m => m.type);
-            const error = new Error(`Timeout, current buffers: ${JSON.stringify(this._byteBuffer)}, ${JSON.stringify(msgBuffer)}`);
+            const error = new Error(`Timeout waiting for "${msg.name}", current buffers: ${JSON.stringify(this._byteBuffer)}, ${JSON.stringify(msgBuffer)}`);
             error.byteBuffer = this._byteBuffer;
             error.msgBuffer = this._messageBuffer.map(m => ({
                 type: m.type,
