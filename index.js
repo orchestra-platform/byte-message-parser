@@ -1,4 +1,6 @@
 'use stricts';
 
 module.exports.SerialPortHelper = require('./src/serialPortHelper.js');
+module.exports.MessagesManager = require('./src/messagesManager.js');
+module.exports.Message = require('./src/message.js');
 module.exports.utils = require('./src/utils.js');

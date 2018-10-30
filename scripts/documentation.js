@@ -1,4 +1,5 @@
 module.exports = [
     'src/serialPortHelper.js',
-    'src/utils.js'
+    'src/messagesManager.js',
+    'src/message.js'
 ];
