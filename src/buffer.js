@@ -1,7 +1,5 @@
 'use strict';
 
-const Logger = require('@orchestra-platform/logger');
-
 const byteArrayToString = (byteArray) => {
     const pad2 = x => x && x.length == 1 ? '0' + x : x;
     const bytes = Array.from(byteArray || [])
@@ -40,9 +38,6 @@ class Buffer {
         this._subscriptions = [];
         this._isReadingMessage = false;
         this.readMessageTimeout = options.readMessageTimeout || 60 * 1000;
-
-        // Init logger
-        this._log = new Logger(options.logLevel);
     }
 
 
@@ -65,7 +60,7 @@ class Buffer {
                 // We don't know what this means, we just ignore the byte
                 // Ideally this should never happen 😅
                 const byteString = byteArrayToString([data[0]]);
-                this._log.w(this._name, `*** Ignored ${byteString}`);
+                console.warn(this._name, `*** Ignored ${byteString}`);
                 data.shift();
             }
         }
@@ -93,8 +88,6 @@ class Buffer {
                     if (subscription.once)
                         subscriptions.splice(index, 1); // Remove subscription
                 });
-
-                this._log.i(this._name, '_handleSerialPortData', 'New Message', message);
             }
         }
     }
@@ -105,7 +98,6 @@ class Buffer {
      * @param {Number} n Number of bytes to be removed. With n=-1 it emptys the buffer
      */
     _removeFromByteBuffer(n) {
-        this._log.i(this._name, '_removeFromByteBuffer', n);
         if (n == -1)
             n = this._byteBuffer.length;
         for (let i = 0; i < n && this._byteBuffer.length > 0; i++)

@@ -12,10 +12,7 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@orchestra-platform/logger": "^0.1.0",
-    "serialport": "^6.0.3"
-  },
+  "dependencies": {},
   "bugs": {
     "url": "https://github.com/orchestra-platform/serial-port-helper/issues"
   },
