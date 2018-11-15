@@ -25,7 +25,7 @@ class MessagesManager {
 
 
     /**
-     * @param {String[]} name Array of message names
+     * @param {String[]} names Array of message names
      */
     getMessages(names) {
         return names.forEach(name => this.getMessage(name));
