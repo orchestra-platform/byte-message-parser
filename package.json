@@ -1,23 +1,20 @@
 {
-  "name": "@orchestra-platform/serial-port",
-  "version": "0.9.0",
-  "description": "serial-port",
+  "name": "@orchestra-platform/byte-message-parser",
+  "version": "1.0.0",
+  "description": "byte-message-parser",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/orchestra-platform/serial-port-helper.git"
+    "url": "git+https://github.com/orchestra-platform/byte-message-parser.git"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@orchestra-platform/logger": "^0.1.0",
-    "serialport": "^6.0.3"
-  },
+  "dependencies": {},
   "bugs": {
-    "url": "https://github.com/orchestra-platform/serial-port-helper/issues"
+    "url": "https://github.com/orchestra-platform/byte-message-parser/issues"
   },
-  "homepage": "https://github.com/orchestra-platform/serial-port-helper#readme"
+  "homepage": "https://github.com/orchestra-platform/byte-message-parser#readme"
 }
