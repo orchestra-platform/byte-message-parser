@@ -4,49 +4,56 @@
 
 -   [MessagesManager][1]
     -   [Parameters][2]
-    -   [getMessage][3]
-        -   [Parameters][4]
-    -   [getMessages][5]
-        -   [Parameters][6]
-    -   [recognizeMessage][7]
-        -   [Parameters][8]
--   [Buffer][9]
-    -   [Parameters][10]
-    -   [Properties][11]
-    -   [handleData][12]
-        -   [Parameters][13]
-    -   [\_removeFromByteBuffer][14]
-        -   [Parameters][15]
-    -   [subscribe][16]
-        -   [Parameters][17]
-    -   [readMessage][18]
-        -   [Parameters][19]
--   [Message][20]
-    -   [Parameters][21]
+    -   [\_messages][3]
+    -   [getMessage][4]
+        -   [Parameters][5]
+    -   [getMessages][6]
+        -   [Parameters][7]
+    -   [recognizeMessage][8]
+        -   [Parameters][9]
+-   [Buffer][10]
+    -   [Parameters][11]
+    -   [Properties][12]
+    -   [handleData][13]
+        -   [Parameters][14]
+    -   [\_removeFromByteBuffer][15]
+        -   [Parameters][16]
+    -   [subscribe][17]
+        -   [Parameters][18]
+    -   [readMessage][19]
+        -   [Parameters][20]
+-   [MessageFragment][21]
     -   [Properties][22]
-    -   [getPattern][23]
-    -   [generateBytes][24]
-        -   [Parameters][25]
--   [MessageFragment][26]
-    -   [Properties][27]
+-   [Message][23]
+    -   [Parameters][24]
+    -   [Properties][25]
+    -   [name][26]
+    -   [fragments][27]
+    -   [getPattern][28]
+    -   [generateBytes][29]
+        -   [Parameters][30]
 
 ## MessagesManager
 
 ### Parameters
 
--   `messages` **[Array][28]&lt;[Message][29]>** 
+-   `messages` **[Array][31]&lt;[Message][32]>** 
+
+### \_messages
+
+Type: [Array][31]&lt;[Message][32]>
 
 ### getMessage
 
 #### Parameters
 
--   `name` **[String][30]** Message name
+-   `name` **[String][33]** Message name
 
 ### getMessages
 
 #### Parameters
 
--   `names` **[Array][28]&lt;[String][30]>** Array of message names
+-   `names` **[Array][31]&lt;[String][33]>** Array of message names
 
 ### recognizeMessage
 
@@ -54,25 +61,25 @@ Recognize a message from an array of bytes
 
 #### Parameters
 
--   `bytes` **[Array][28]** 
--   `messages` **[Array][28]&lt;[Message][29]>** 
+-   `bytes` **[Array][31]** 
+-   `messages` **[Array][31]&lt;[Message][32]>** 
 
-Returns **[Boolean][31]** Returns false if no message is found
+Returns **[Boolean][34]** Returns false if no message is found
 
-Returns **[Object][32]** Returns an Object {type,bytes,values} if a message is found
+Returns **[Object][35]** Returns an Object {type,bytes,values} if a message is found
 
 ## Buffer
 
 ### Parameters
 
--   `options` **[Object][32]** 
-    -   `options.isMessageStart` **[Object][32]** 
-    -   `options.recognizeMessage` **[Object][32]** Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
--   `readMessageTimeout` **[Number][33]?** The value of Buffer.readMessageTimeout
+-   `options` **[Object][35]** 
+    -   `options.isMessageStart` **[Object][35]** 
+    -   `options.recognizeMessage` **[Object][35]** Function that recognize a message from an array of bytes, it must return false or an Object with a property 'type'
+-   `readMessageTimeout` **[Number][36]?** The value of Buffer.readMessageTimeout
 
 ### Properties
 
--   `readMessageTimeout` **[Number][33]** Time (in milliseconds) after which readMessage will throw an error if no data is received
+-   `readMessageTimeout` **[Number][36]** Time (in milliseconds) after which readMessage will throw an error if no data is received
 
 ### handleData
 
@@ -80,7 +87,7 @@ Functions that receive chunks of data and recognize the messages
 
 #### Parameters
 
--   `data` **[Array][28]&lt;[Number][33]>** 
+-   `data` **[Array][31]&lt;[Number][36]>** 
 
 ### \_removeFromByteBuffer
 
@@ -88,7 +95,7 @@ Removes N bytes from the buffer
 
 #### Parameters
 
--   `n` **[Number][33]** Number of bytes to be removed. With n=-1 it emptys the buffer
+-   `n` **[Number][36]** Number of bytes to be removed. With n=-1 it emptys the buffer
 
 ### subscribe
 
@@ -96,13 +103,13 @@ Subscribe to a message
 
 #### Parameters
 
--   `options` **[Object][32]** 
-    -   `options.msg` **[Message][29]** Message
-    -   `options.once` **[Boolean][31]**  (optional, default `true`)
-    -   `options.all` **[Boolean][31]**  (optional, default `false`)
-    -   `options.callback` **[Function][34]** 
+-   `options` **[Object][35]** 
+    -   `options.msg` **[Message][32]** Message
+    -   `options.once` **[Boolean][34]**  (optional, default `true`)
+    -   `options.all` **[Boolean][34]**  (optional, default `false`)
+    -   `options.callback` **[Function][37]** 
 
-Returns **[Function][34]** unsubscribe callback
+Returns **[Function][37]** unsubscribe callback
 
 ### readMessage
 
@@ -110,26 +117,49 @@ Read a message from the serialport
 
 #### Parameters
 
--   `msg` **[String][30]** Message
+-   `msg` **[String][33]** Message
+-   `options` **[Object][35]**  (optional, default `{}`)
+    -   `options.timeout` **[Number][36]?** If not set it uses the readMessageTimeout that was passed to the constructor
 
-Returns **[Message][29]** message
+Returns **[Message][32]** message
+
+## MessageFragment
+
+Message Fragment
+
+Type: [Object][35]
+
+### Properties
+
+-   `name` **[String][33]** Name of the fragment
+-   `desc` **[String][33]?** Description of the fragment
+-   `pattern` **[Array][31]&lt;([Number][36] \| [Function][37] \| [String][33])>** Defines the fragment byte pattern. undefined works as a wildcard for a byte and "\*" for multiple bytes
+-   `default` **[Array][31]** Used when a message is created
 
 ## Message
 
 ### Parameters
 
--   `name` **[String][30]** 
--   `fragments` **[Array][28]&lt;[MessageFragment][35]>** 
+-   `name` **[String][33]** 
+-   `fragments` **[Array][31]&lt;[MessageFragment][38]>** 
 
 ### Properties
 
--   `name` **[String][30]** 
+-   `name` **[String][33]** 
+
+### name
+
+Type: [String][33]
+
+### fragments
+
+Type: [Array][31]&lt;[MessageFragment][38]>
 
 ### getPattern
 
 Return pattern
 
-Returns **[Array][28]** Array of Bytes and Function that return array of bytes
+Returns **[Array][31]** Array of Bytes and Function that return array of bytes
 
 ### generateBytes
 
@@ -137,89 +167,82 @@ Generate the raw message
 
 #### Parameters
 
--   `data` **[Object][32]** Dictionary with array of bytes (optional, default `{}`)
+-   `data` **[Object][35]** Dictionary with array of bytes (optional, default `{}`)
 
-Returns **[Array][28]&lt;[Number][33]>** Array of bytes
-
-## MessageFragment
-
-Message Fragment
-
-Type: [Object][32]
-
-### Properties
-
--   `name` **[String][30]** Name of the fragment
--   `desc` **[String][30]?** Description of the fragment
--   `pattern` **[Array][28]** Array of bytes, function or undefined (undefined works as a wildcard)
--   `default` **[Array][28]** Used when a message is created
+Returns **[Array][31]&lt;[Number][36]>** Array of bytes
 
 [1]: #messagesmanager
 
 [2]: #parameters
 
-[3]: #getmessage
+[3]: #_messages
 
-[4]: #parameters-1
+[4]: #getmessage
 
-[5]: #getmessages
+[5]: #parameters-1
 
-[6]: #parameters-2
+[6]: #getmessages
 
-[7]: #recognizemessage
+[7]: #parameters-2
 
-[8]: #parameters-3
+[8]: #recognizemessage
 
-[9]: #buffer
+[9]: #parameters-3
 
-[10]: #parameters-4
+[10]: #buffer
 
-[11]: #properties
+[11]: #parameters-4
 
-[12]: #handledata
+[12]: #properties
 
-[13]: #parameters-5
+[13]: #handledata
 
-[14]: #_removefrombytebuffer
+[14]: #parameters-5
 
-[15]: #parameters-6
+[15]: #_removefrombytebuffer
 
-[16]: #subscribe
+[16]: #parameters-6
 
-[17]: #parameters-7
+[17]: #subscribe
 
-[18]: #readmessage
+[18]: #parameters-7
 
-[19]: #parameters-8
+[19]: #readmessage
 
-[20]: #message
+[20]: #parameters-8
 
-[21]: #parameters-9
+[21]: #messagefragment
 
 [22]: #properties-1
 
-[23]: #getpattern
+[23]: #message
 
-[24]: #generatebytes
+[24]: #parameters-9
 
-[25]: #parameters-10
+[25]: #properties-2
 
-[26]: #messagefragment
+[26]: #name
 
-[27]: #properties-2
+[27]: #fragments
 
-[28]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[28]: #getpattern
 
-[29]: #message
+[29]: #generatebytes
 
-[30]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[30]: #parameters-10
 
-[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[32]: #message
 
-[33]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[33]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[34]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[34]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[35]: #messagefragment
+[35]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[36]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[37]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[38]: #messagefragment

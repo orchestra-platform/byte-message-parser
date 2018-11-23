@@ -5,7 +5,7 @@
  * @typedef {Object} MessageFragment
  * @property {String} name - Name of the fragment
  * @property {String} [desc] - Description of the fragment
- * @property {Array} pattern - Array of bytes, function or undefined (undefined works as a wildcard)
+ * @property {(Number|Function|String)[]} pattern - Defines the fragment byte pattern. undefined works as a wildcard for a byte and "*" for multiple bytes
  * @property {Array} default - Used when a message is created
  */
 
@@ -20,10 +20,18 @@
 class Message {
 
     constructor(name, fragments) {
+        /** @type {String} */
         this.name = name;
 
         // TODO: check fragments
+        /** @type {MessageFragment[]} */
         this.fragments = fragments;
+
+        // TODO: Check that the pattern of the last fragment's isn't [undefined] or "*"
+
+        // TODO: Check that after a "*" there is a function or a static value
+
+        // TODO: Check that there is at most only one "*"
     }
 
 

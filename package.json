@@ -1,6 +1,6 @@
 {
   "name": "@orchestra-platform/byte-message-parser",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "byte-message-parser",
   "main": "index.js",
   "scripts": {
