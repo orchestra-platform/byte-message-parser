@@ -128,17 +128,20 @@ class Buffer {
     /**
      * Read a message from the serialport
      * @param {String} msg Message
+     * @param {Object} options 
+     * @param {Number} [options.timeout] If not set it uses the readMessageTimeout that was passed to the constructor
      * @returns {Message} message
      * @async
      */
-    async readMessage(msg) {
+    async readMessage(msg, options = {}) {
         let resolve, reject;
         const promise = new Promise((_resolve, _reject) => {
             resolve = _resolve;
             reject = _reject;
         });
 
-        const timeout = setTimeout(_ => {
+        const { timeout = this.readMessageTimeout } = options;
+        const timeoutId = setTimeout(_ => {
             const msgBuffer = this._messageBuffer.map(m => m.type);
             const error = new Error(`Timeout waiting for "${msg.name}", current buffers: ${JSON.stringify(this._byteBuffer)}, ${JSON.stringify(msgBuffer)}`);
             error.byteBuffer = this._byteBuffer;
@@ -147,10 +150,10 @@ class Buffer {
                 data: m.bytes
             }));
             reject(error);
-        }, this.readMessageTimeout);
+        }, timeout);
 
         const callback = msg => {
-            clearTimeout(timeout);
+            clearTimeout(timeoutId);
             resolve(msg);
         }
 

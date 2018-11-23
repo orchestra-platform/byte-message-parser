@@ -5,7 +5,7 @@
  * @typedef {Object} MessageFragment
  * @property {String} name - Name of the fragment
  * @property {String} [desc] - Description of the fragment
- * @property {(Number|Function)[]} pattern - Array of bytes, function or undefined (undefined works as a wildcard)
+ * @property {(Number|Function|String)[]} pattern - Defines the fragment byte pattern. undefined works as a wildcard for a byte and "*" for multiple bytes
  * @property {Array} default - Used when a message is created
  */
 
