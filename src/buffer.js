@@ -70,10 +70,12 @@ class Buffer {
             }
         }
 
-        for (const byte of data) {
+        for (let i = 0; i < data.length; i++) {
+            const byte = data[i];
             this._byteBuffer.push(byte);
 
             const message = this._recognizeMessage(this._byteBuffer);
+
             if (message) {
                 // Remove the message from the byteBuffer
                 this._removeFromByteBuffer(message.bytes.length);
@@ -95,6 +97,16 @@ class Buffer {
                 });
 
                 this._log.i(this._name, '_handleSerialPortData', 'New Message', message);
+
+                this._isReadingMessage = false;
+
+                const remainingBytes = [...data].slice(i + 1, data.length);
+                if (remainingBytes.length > 0) {
+                    console.log('**************** remainingBytes' + JSON.stringify(remainingBytes));
+                    this.handleData(remainingBytes);
+                }
+
+                return;
             }
         }
     }

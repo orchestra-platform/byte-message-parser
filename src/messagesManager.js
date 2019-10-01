@@ -42,11 +42,14 @@ class MessagesManager {
     recognizeMessage(bytes) {
         // TODO: check messages
 
+        let patternSkipped = false;
         for (const msg of this._messages) {
 
             const pattern = msg.getPattern(msg);
-            if (pattern.length > bytes.length)
+            if (pattern.length > bytes.length) {
+                patternSkipped = true;
                 continue;
+            }
 
             let recognized = true;
             for (let i = 0; i < pattern.length && recognized; i++) {
@@ -92,6 +95,11 @@ class MessagesManager {
                 values: values
             }
         }
+
+        if (patternSkipped === false) {
+            return null;
+        }
+
         return false;
     }
 
