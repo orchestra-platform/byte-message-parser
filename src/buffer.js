@@ -132,11 +132,12 @@ class Buffer {
      * @param {Boolean} [options.once=true] 
      * @param {Boolean} [options.all=false] 
      * @param {Function} options.callback
+     * @param {Function} options.onError
      * @returns {Function} unsubscribe callback
      */
     subscribe(options) {
-        const { msg, once = true, all = false, callback } = options;
-        const subscription = { msg, once, all, callback };
+        const { msg, once = true, all = false, callback, onError } = options;
+        const subscription = { msg, once, all, callback, onError };
         this._subscriptions.push(subscription);
         return _ => {
             const index = this._subscriptions.indexOf(subscription);
@@ -172,9 +173,14 @@ class Buffer {
         const callback = msg => {
             clearTimeout(timeout);
             resolve(msg);
-        }
+        };
 
-        this.subscribe({ msg, once: true, callback });
+        const onError = err => {
+            clearTimeout(timeout);
+            reject(err);
+        };
+
+        this.subscribe({ msg, once: true, callback, onError });
 
         return promise;
     }
