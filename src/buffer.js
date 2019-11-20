@@ -42,7 +42,7 @@ class Buffer {
         this.readMessageTimeout = options.readMessageTimeout || 60 * 1000;
 
         // Init logger
-        this._log = new Logger(options.logLevel);
+        this._log = new Logger({ logLevel: options.logLevel });
     }
 
 
@@ -102,7 +102,7 @@ class Buffer {
 
                 const remainingBytes = [...data].slice(i + 1, data.length);
                 if (remainingBytes.length > 0) {
-                    console.log('**************** remainingBytes' + JSON.stringify(remainingBytes));
+                    this._log.i('**************** remainingBytes' + JSON.stringify(remainingBytes));
                     this.handleData(remainingBytes);
                 }
 
