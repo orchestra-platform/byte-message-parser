@@ -15,12 +15,17 @@
  * @class Message
  * @param {String} name
  * @param {MessageFragment[]} fragments
+ * @param {Object} options
+ * @param {Boolean} [options.ignoreDuringParsing=false]
  * @property {String} name
+ * @property {Boolean} ignoreDuringParsing
  */
 class Message {
 
-    constructor(name, fragments) {
+    constructor(name, fragments, options = {}) {
+        const { ignoreDuringParsing = false } = options
         this.name = name;
+        this.ignoreDuringParsing = ignoreDuringParsing;
 
         // TODO: check fragments
         this.fragments = fragments;

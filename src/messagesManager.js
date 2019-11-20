@@ -9,6 +9,7 @@ const Message = require('./message.js');
 class MessagesManager {
 
     constructor(messages) {
+        /** @type {Message[]} */
         this._messages = messages;
     }
 
@@ -44,6 +45,9 @@ class MessagesManager {
 
         let patternSkipped = false;
         for (const msg of this._messages) {
+
+            if (msg.ignoreDuringParsing)
+                continue;
 
             const pattern = msg.getPattern(msg);
             if (pattern.length > bytes.length) {
